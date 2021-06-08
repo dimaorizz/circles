@@ -21,11 +21,11 @@ circle.onmousedown = function(event) {
       let circleInfo = circle.getBoundingClientRect();
       await fetch('http://localhost:3000/coords', {
           method: 'post',
-          mode: 'no-cors',
-          headers: new Headers({
+          mode: 'cors',
+          headers: {
             'Accept':'application/json',
             'Content-Type': 'application/json'
-          }),
+          },
           body: JSON.stringify({
               offsetTop: circleInfo.top,
               offsetLeft: circleInfo.left
