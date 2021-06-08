@@ -1,5 +1,7 @@
 let circle = document.querySelector('#circle');
 
+locateCircle();
+
 circle.onmousedown = function(event) {
 
     function moveAt(pageX, pageY) {
@@ -35,18 +37,22 @@ circle.onmousedown = function(event) {
   
   };
 
+async function locateCircle() {
+  try {
+    let circlePosition = await fetch('http://localhost:3000/coords');
+    circlePosition = await circlePosition.json();
+    circle.style.top = `${circlePosition.offsetTop}px`;
+    circle.style.left = `${circlePosition.offsetLeft}px`;
+  } catch (err) {
+    
+  }
+
+}
+
 // const getPosTimer = setInterval(() => {
 //     let circleInfo = circle.getBoundingClientRect();
 //     console.log(circleInfo.top)
 //     console.log(circleInfo.left);
 // }, 100);
-
-
-const circlePosition = {
-    posX: 0,
-    posY: 0
-};
-
-
 
 // console.log(circleInfo.y);
