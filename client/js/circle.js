@@ -1,12 +1,11 @@
 let circle = document.querySelector('#circle');
 
-locateCircle();
+init();
 
 circle.onmousedown = function(event) {
-
     function moveAt(pageX, pageY) {
-      circle.style.left = pageX - circle.offsetWidth / 2 + 'px';
-      circle.style.top = pageY - circle.offsetHeight / 2 + 'px';
+      circle.style.left = `${pageX-circle.offsetWidth/2}px`;
+      circle.style.top = `${pageY-circle.offsetHeight/2}px`;
     }
   
     moveAt(event.pageX, event.pageY);
@@ -41,18 +40,36 @@ async function locateCircle() {
   try {
     let circlePosition = await fetch('http://localhost:3000/coords');
     circlePosition = await circlePosition.json();
-    circle.style.top = `${circlePosition.offsetTop}px`;
-    circle.style.left = `${circlePosition.offsetLeft}px`;
+    return circlePosition;
+    
   } catch (err) {
     
   }
 
 }
 
-// const getPosTimer = setInterval(() => {
-//     let circleInfo = circle.getBoundingClientRect();
-//     console.log(circleInfo.top)
-//     console.log(circleInfo.left);
-// }, 100);
+async function init() {
+  circlePosition = await locateCircle();
+  console.log(circlePosition);
+  circle.style.top = `${circlePosition.offsetTop}px`;
+  circle.style.left = `${circlePosition.offsetLeft}px`;
+}
+
+async function rerenderCircle() {
+  const serverPos = await locateCircle();
+  if(serverPos.offsetTop !== circlePosition.offsetTop || serverPos.offsetLeft !== circlePosition.offsetLeft) {
+    circlePosition.offsetTop = serverPos.offsetTop;
+    circlePosition.offsetLeft = serverPos.offsetLeft;
+    circle.style.top = `${circlePosition.offsetTop}px`;
+    circle.style.left = `${circlePosition.offsetLeft}px`;
+    console.log('rerendered')
+    return;
+  }
+  console.log('as is');
+}
+
+
+
+const fetchCoordsInterval = setInterval(rerenderCircle, 1000);
 
 // console.log(circleInfo.y);
